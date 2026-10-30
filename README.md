@@ -1,6 +1,9 @@
 # Procurement RAG Agent – KI-gestützte Lieferantenauswahl
 
 [![CI](https://github.com/MaxXSammy/procurement-rag-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/MaxXSammy/procurement-rag-agent/actions/workflows/ci.yml)
+[![Live-Demo](https://img.shields.io/badge/Live--Demo-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://procurement-rag-agent.streamlit.app/)
+
+**[▶ Live-Demo öffnen](https://procurement-rag-agent.streamlit.app/)** (Offline-Modus ohne KI, keine Installation nötig. Nach längerer Pause braucht der erste Aufruf etwa 30 Sekunden.)
 
 Ein Agent, der Lieferantenangebote, Selbstauskünfte und Verträge durchsucht, daraus strukturierte Profile extrahiert und Lieferanten nach frei einstellbaren Kriterien bewertet. Ein Dashboard zeigt der Geschäftsleitung, was das System leistet und wie zuverlässig es ist. Alles läuft lokal mit Ollama oder ganz ohne KI im Offline-Modus.
 
