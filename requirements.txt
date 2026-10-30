@@ -1,0 +1,19 @@
+# Kern
+numpy>=1.26
+pandas>=2.1
+pydantic>=2.7
+pypdf>=4.0
+scikit-learn>=1.4
+python-dotenv>=1.0
+
+# Lokales LLM (optional, sonst Offline-Modus)
+ollama>=0.4
+
+# Oberfläche
+streamlit>=1.46
+
+# Testdaten erzeugen
+reportlab>=4.0
+
+# Tests
+pytest>=8.0

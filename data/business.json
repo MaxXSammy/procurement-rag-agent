@@ -1,0 +1,12 @@
+{
+  "auftraggeber": "Hagemann Antriebstechnik GmbH",
+  "anfrage": "AS-2027-014",
+  "artikel": "Antriebswelle AW-40",
+  "jahresbedarf_stueck": 12000,
+  "bestandslieferant": "Brenner Zerspanung GmbH",
+  "manuell_minuten_pro_angebot": 45,
+  "manuell_minuten_bewertung": 120,
+  "ausschreibungen_pro_jahr": 25,
+  "stundensatz_einkauf_eur": 65,
+  "hinweis": "Annahmen für die Wirtschaftlichkeitsrechnung. In der Oberfläche anpassbar."
+}

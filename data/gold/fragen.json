@@ -1,0 +1,252 @@
+[
+  {
+    "id": "F01",
+    "frage": "Welche Lieferanten verlangen eine Preisgleitklausel?",
+    "quellen": [
+      "Angebot_feldmann.pdf",
+      "Angebot_precimet.pdf"
+    ],
+    "erwartet": [
+      [
+        "Feldmann"
+      ],
+      [
+        "Precimet"
+      ]
+    ]
+  },
+  {
+    "id": "F02",
+    "frage": "Wie hoch ist der Stückpreis von Alpen Drehtechnik?",
+    "quellen": [
+      "Angebot_alpen.pdf"
+    ],
+    "erwartet": [
+      [
+        "18,70"
+      ]
+    ]
+  },
+  {
+    "id": "F03",
+    "frage": "Welche Lieferzeit bietet Precimet an?",
+    "quellen": [
+      "Angebot_precimet.pdf"
+    ],
+    "erwartet": [
+      [
+        "5 Wochen",
+        "35"
+      ]
+    ]
+  },
+  {
+    "id": "F04",
+    "frage": "Welches Zahlungsziel bietet Officina Meccanica Rossi?",
+    "quellen": [
+      "Angebot_rossi.pdf"
+    ],
+    "erwartet": [
+      [
+        "60 Tage"
+      ]
+    ]
+  },
+  {
+    "id": "F05",
+    "frage": "Hat Officina Meccanica Rossi ein ISO 9001 Zertifikat?",
+    "quellen": [
+      "Selbstauskunft_rossi.pdf"
+    ],
+    "erwartet": [
+      [
+        "Vorbereitung",
+        "kein gültiges",
+        "nein"
+      ]
+    ]
+  },
+  {
+    "id": "F06",
+    "frage": "Wie hoch ist der CO2-Fußabdruck pro Stück bei Swiss Turning?",
+    "quellen": [
+      "Selbstauskunft_swissturning.pdf"
+    ],
+    "erwartet": [
+      [
+        "2,2"
+      ]
+    ]
+  },
+  {
+    "id": "F07",
+    "frage": "Bis wann läuft der Rahmenvertrag mit Brenner?",
+    "quellen": [
+      "Rahmenvertrag_brenner_2024.pdf"
+    ],
+    "erwartet": [
+      [
+        "31.12.2026"
+      ]
+    ]
+  },
+  {
+    "id": "F08",
+    "frage": "Welche Kündigungsfrist hat der Rahmenvertrag mit Brenner?",
+    "quellen": [
+      "Rahmenvertrag_brenner_2024.pdf"
+    ],
+    "erwartet": [
+      [
+        "3 Monate"
+      ]
+    ]
+  },
+  {
+    "id": "F09",
+    "frage": "Welche maximale Lieferzeit erlaubt die Einkaufsrichtlinie für Seriendrehteile?",
+    "quellen": [
+      "Einkaufsrichtlinie_Hagemann.pdf"
+    ],
+    "erwartet": [
+      [
+        "30 Kalendertage",
+        "30 Tage"
+      ]
+    ]
+  },
+  {
+    "id": "F10",
+    "frage": "Wer muss Preisgleitklauseln freigeben?",
+    "quellen": [
+      "Einkaufsrichtlinie_Hagemann.pdf"
+    ],
+    "erwartet": [
+      [
+        "Geschäftsführung"
+      ]
+    ]
+  },
+  {
+    "id": "F11",
+    "frage": "Wie hoch ist die Mindestbestellmenge bei Kovotech?",
+    "quellen": [
+      "Angebot_kovotech.pdf"
+    ],
+    "erwartet": [
+      [
+        "1.500"
+      ]
+    ]
+  },
+  {
+    "id": "F12",
+    "frage": "Welchen Skonto gewährt Alpen Drehtechnik?",
+    "quellen": [
+      "Angebot_alpen.pdf"
+    ],
+    "erwartet": [
+      [
+        "3 %",
+        "3%"
+      ]
+    ]
+  },
+  {
+    "id": "F13",
+    "frage": "Wie hoch ist die Liefertreue von Rheinwerk Komponenten?",
+    "quellen": [
+      "Selbstauskunft_rheinwerk.pdf"
+    ],
+    "erwartet": [
+      [
+        "98"
+      ]
+    ]
+  },
+  {
+    "id": "F14",
+    "frage": "Welche Reklamationsquote meldet Precimet?",
+    "quellen": [
+      "Selbstauskunft_precimet.pdf"
+    ],
+    "erwartet": [
+      [
+        "2,6"
+      ]
+    ]
+  },
+  {
+    "id": "F15",
+    "frage": "Wie viele Mitarbeiter hat Kovotech?",
+    "quellen": [
+      "Selbstauskunft_kovotech.pdf"
+    ],
+    "erwartet": [
+      [
+        "210"
+      ]
+    ]
+  },
+  {
+    "id": "F16",
+    "frage": "Wie lange ist das Angebot von Feldmann gültig?",
+    "quellen": [
+      "Angebot_feldmann.pdf"
+    ],
+    "erwartet": [
+      [
+        "28.02.2027"
+      ]
+    ]
+  },
+  {
+    "id": "F17",
+    "frage": "Welcher Werkstoff ist für die Antriebswelle AW-40 gefordert?",
+    "quellen": [
+      "Anfrage_AS-2027-014.pdf"
+    ],
+    "erwartet": [
+      [
+        "C45"
+      ]
+    ]
+  },
+  {
+    "id": "F18",
+    "frage": "Wie hoch ist der geplante Jahresbedarf der Anfrage AS-2027-014?",
+    "quellen": [
+      "Anfrage_AS-2027-014.pdf"
+    ],
+    "erwartet": [
+      [
+        "12.000"
+      ]
+    ]
+  },
+  {
+    "id": "F19",
+    "frage": "Wie hoch ist der Stückpreis von Kovotech?",
+    "quellen": [
+      "Angebot_kovotech.pdf"
+    ],
+    "erwartet": [
+      [
+        "16,40",
+        "1.640"
+      ]
+    ]
+  },
+  {
+    "id": "F20",
+    "frage": "Ab welchem Jahresvolumen muss die Geschäftsführung Rahmenverträge freigeben?",
+    "quellen": [
+      "Einkaufsrichtlinie_Hagemann.pdf"
+    ],
+    "erwartet": [
+      [
+        "200.000"
+      ]
+    ]
+  }
+]
