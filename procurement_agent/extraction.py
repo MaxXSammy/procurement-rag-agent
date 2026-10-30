@@ -105,7 +105,7 @@ Feldregeln:
 - skonto_prozent: 0, wenn kein Skonto genannt ist.
 - preisgleitklausel: true nur, wenn Preise an einen Index gekoppelt oder anpassbar sind. Festpreise = false.
 - iso_9001 / iso_14001: true nur bei gültigem Zertifikat. "in Vorbereitung" oder "nicht vorhanden" = false.
-- reklamationsquote_prozent: in Prozent. ppm durch 10000 teilen.
+- reklamationsquote_prozent: die Prozentzahl selbst, "1,2 %" = 1.2 (nicht 0.012). ppm durch 10000 teilen.
 - Fehlt eine Angabe, setze null. Erfinde keine Werte.
 Antworte nur mit JSON."""
 

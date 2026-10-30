@@ -76,14 +76,19 @@ flowchart LR
 
 ## Erfolgsmessung
 
-| Kennzahl | Bedeutung | Offline (ohne KI) | Ollama (qwen2.5:7b) |
+| Kennzahl | Bedeutung | Offline (ohne KI) | Ollama (qwen2.5:7b) ² |
 |---|---|---|---|
-| Retrieval-Trefferquote | erwartete Quelle unter den Top 4 | 95 % | *ausstehend* |
-| Antwortgenauigkeit | alle erwarteten Fakten in der Antwort | 100 % ¹ | *ausstehend* |
-| Belegquote | alle Zahlen der Antwort in den Quellen | 100 % | *ausstehend* |
-| Extraktionsgenauigkeit | korrekt extrahierte Profilfelder (88 Felder) | 96 % | *ausstehend* |
+| Retrieval-Trefferquote | erwartete Quelle unter den Top 4 | 95 % | 95 % |
+| Antwortgenauigkeit | alle erwarteten Fakten in der Antwort | 100 % ¹ | 100 % |
+| Belegquote | alle Zahlen der Antwort in den Quellen | 100 % | 100 % |
+| Extraktionsgenauigkeit | korrekt extrahierte Profilfelder (88 Felder) | 96 % | 99 % |
+| Ø Antwortzeit | je Frage, lokal | < 0,01 s | 1,3 s |
 
 ¹ Die Offline-Heuristik wurde an diesen Testdaten entwickelt. Der Wert ist deshalb optimistisch und kein Maßstab für fremde Dokumente.
+
+² Gemessen mit LLM-Extraktion und LLM-Agent, aber TF-IDF-Suche, da das Embedding-Modell `nomic-embed-text` nicht installiert war. Die Retrieval-Trefferquote ist deshalb identisch mit dem Offline-Modus.
+
+**Was die Messung gezeigt hat:** Der erste Lauf ergab nur 94 % Extraktionsgenauigkeit. Das Modell gab Reklamationsquoten wie „1,2 %“ als `0.012` aus. Die Belegprüfung hat diese Werte verworfen, statt sie ins Ranking zu übernehmen. Eine präzisere Feldregel im Prompt hob die Genauigkeit auf 99 %. Der verbleibende Fehler ist eine Angabe in ppm, die das 7B-Modell nicht zuverlässig umrechnet. Auch dieser Wert wird verworfen und als Warnung angezeigt.
 
 **Geschäftskennzahlen mit den Standardannahmen:** Empfehlung Alpen Drehtechnik statt Bestandslieferant Brenner, rund **38.400 € Einsparpotenzial pro Jahr** bei 12.000 Stück. Dazu etwa **190 Stunden Zeitersparnis pro Jahr** bei 25 Ausschreibungen. Alle Annahmen stehen in `data/business.json` und lassen sich in der Oberfläche ändern.
 
@@ -180,7 +185,8 @@ tests/               # pytest
 
 ## Roadmap
 
-- [ ] Evaluation mit Ollama ausführen und Ergebnisse oben eintragen
+- [x] Evaluation mit Ollama ausführen und Ergebnisse oben eintragen
+- [ ] Evaluation mit Ollama-Embeddings (`nomic-embed-text`) wiederholen
 - [ ] Total Cost of Ownership statt reinem Stückpreis
 - [ ] Hybride Suche (BM25 + Embeddings) und Reranking
 - [ ] Upload eigener Angebote in der Oberfläche
