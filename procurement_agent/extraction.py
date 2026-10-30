@@ -12,10 +12,10 @@ import json
 import re
 from typing import Protocol
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 from procurement_agent.documents import Dokument
-from procurement_agent.llm import LLMProvider
+from procurement_agent.llm import LLMNichtErreichbar, LLMProvider
 
 
 class Lieferantenprofil(BaseModel):
@@ -118,16 +118,27 @@ class LLMExtractor:
     def extrahiere(self, slug: str, dokumente: list[Dokument]) -> Lieferantenprofil:
         quelltext = "\n\n".join(f"### {d.name}\n{d.text}" for d in dokumente)
         schema = WERT_SCHEMA
-        antwort = self.llm.chat(
-            [{"role": "system", "content": LLM_PROMPT}, {"role": "user", "content": quelltext}],
-            schema=schema,
-        )
+        leer = Lieferantenprofil(lieferant=firmenname(dokumente), slug=slug)
+        try:
+            antwort = self.llm.chat(
+                [{"role": "system", "content": LLM_PROMPT}, {"role": "user", "content": quelltext}],
+                schema=schema,
+            )
+        except LLMNichtErreichbar:
+            return leer.model_copy(update={"warnungen": ["Modell nicht erreichbar, keine Werte extrahiert"]})
         try:
             daten = json.loads(antwort.inhalt)
         except json.JSONDecodeError:
-            return Lieferantenprofil(lieferant=firmenname(dokumente), slug=slug, warnungen=["Kein gültiges JSON"])
-        daten.update(lieferant=firmenname(dokumente), slug=slug, warnungen=[])
-        profil = Lieferantenprofil.model_validate({k: v for k, v in daten.items() if k in Lieferantenprofil.model_fields})
+            return leer.model_copy(update={"warnungen": ["Kein gültiges JSON"]})
+        if not isinstance(daten, dict):
+            return leer.model_copy(update={"warnungen": ["JSON ist kein Objekt"]})
+        daten.update(lieferant=leer.lieferant, slug=slug, warnungen=[])
+        try:
+            profil = Lieferantenprofil.model_validate({k: v for k, v in daten.items() if k in Lieferantenprofil.model_fields})
+        except ValidationError as fehler:
+            # Z. B. "6 Wochen" statt einer Zahl: Profil bleibt leer, die Ursache wird angezeigt
+            felder = ", ".join(str(f["loc"][0]) for f in fehler.errors())
+            return leer.model_copy(update={"warnungen": [f"Schema verletzt: {felder}"]})
         return pruefe_belege(profil, quelltext)
 
 
