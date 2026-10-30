@@ -106,7 +106,9 @@ with tab_fragen:
     with st.form("frageformular", clear_on_submit=True):
         spalte_frage, spalte_beispiel = st.columns([3, 2])
         eingabe = spalte_frage.text_input("Ihre Frage", placeholder="z. B. Welche Lieferanten verlangen eine Preisgleitklausel?")
-        beispiel = spalte_beispiel.selectbox("oder ein Beispiel wählen", [""] + beispiele)
+        beispiel = spalte_beispiel.selectbox(
+            "oder ein Beispiel wählen", beispiele, index=None, placeholder="Beispielfrage auswählen …"
+        )
         abgeschickt = st.form_submit_button("Fragen", type="primary")
 
     if abgeschickt and (eingabe or beispiel):
@@ -165,7 +167,7 @@ with tab_bewertung:
         profile = system.profile()
         basis = pd.DataFrame([{"Lieferant": p.lieferant, **{FELD_LABELS[f]: getattr(p, f) for f in WERTFELDER}} for p in profile])
         bearbeitet = st.data_editor(
-            basis, hide_index=True, width="stretch", disabled=["Lieferant"], key="profil_editor",
+            basis, hide_index=True, width="stretch", disabled=["Lieferant"], key="profil_editor", placeholder="–",
             column_config={
                 FELD_LABELS["stueckpreis_eur"]: st.column_config.NumberColumn(format="%.2f"),
                 FELD_LABELS["co2_kg_pro_stueck"]: st.column_config.NumberColumn(format="%.1f"),
@@ -187,7 +189,7 @@ with tab_bewertung:
 
         st.subheader("Rangliste")
         tabelle = pd.DataFrame([{
-            "Rang": b.rang,
+            "Rang": str(b.rang) if b.zugelassen else "–",
             "Lieferant": b.profil.lieferant,
             "Score": round(b.score, 3) if b.zugelassen else None,
             "Stückpreis (€)": b.profil.stueckpreis_eur,
@@ -197,7 +199,7 @@ with tab_bewertung:
             "Hinweise": "; ".join(b.hinweise),
         } for b in bewertungen])
         st.dataframe(
-            tabelle, hide_index=True, width="stretch",
+            tabelle, hide_index=True, width="stretch", placeholder="–",
             column_config={
                 "Score": st.column_config.ProgressColumn(min_value=0.0, max_value=1.0, format="%.2f"),
                 "Stückpreis (€)": st.column_config.NumberColumn(format="%.2f"),
