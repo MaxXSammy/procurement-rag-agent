@@ -4,6 +4,10 @@
 
 Ein Agent, der Lieferantenangebote, Selbstauskünfte und Verträge durchsucht, daraus strukturierte Profile extrahiert und Lieferanten nach frei einstellbaren Kriterien bewertet. Ein Dashboard zeigt der Geschäftsleitung, was das System leistet und wie zuverlässig es ist. Alles läuft lokal mit Ollama oder ganz ohne KI im Offline-Modus.
 
+![Demo: Frage mit Quellenangabe, Rangliste mit Schiebereglern, Management-Kennzahlen](docs/demo.gif)
+
+*Demo im Offline-Modus: Der Agent beantwortet eine Frage mit Quelle und Belegprüfung. Wird das Preisgewicht heruntergeregelt, rückt Swiss Turning auf Platz 1.*
+
 ## Das Problem
 
 Bei einer Ausschreibung landen Angebote in unterschiedlichsten Formaten auf dem Tisch. Ein Lieferant nennt den Preis je 100 Stück, ein anderer die Lieferzeit in Wochen, ein dritter versteckt eine Preisgleitklausel im Kleingedruckten. Der Einkauf überträgt alles von Hand in eine Tabelle, prüft die Einkaufsrichtlinie und rechnet Szenarien durch. Das kostet pro Ausschreibung mehrere Stunden und ist fehleranfällig.
@@ -20,7 +24,22 @@ Die Oberfläche hat drei Bereiche:
 | **Lieferantenbewertung** | Gewichte per Schieberegler, K.-o.-Kriterien aus der Einkaufsrichtlinie, extrahierte Werte im Tabelleneditor korrigierbar. Die Rangliste aktualisiert sich sofort. |
 | **Erfolgsmessung** | Einsparpotenzial, Zeitersparnis und erkannte Risiken für die Geschäftsleitung, dazu die gemessene Qualität des Systems mit Verlauf. |
 
-> Screenshot folgt.
+<details>
+<summary><b>Screenshots der drei Bereiche</b></summary>
+
+**Fragen an die Dokumente**: Antwort mit Quelle, Belegprüfung und den gefundenen Abschnitten
+
+![Fragen an die Dokumente](docs/fragen.png)
+
+**Lieferantenbewertung**: Gewichte, K.-o.-Kriterien, korrigierbare Extraktion und Rangliste
+
+![Lieferantenbewertung](docs/bewertung.png)
+
+**Erfolgsmessung**: Einsparpotenzial, Zeitersparnis, Systemqualität und erkannte Risiken
+
+![Erfolgsmessung](docs/erfolgsmessung.png)
+
+</details>
 
 ## Architektur
 
@@ -147,6 +166,7 @@ procurement_agent/
 app.py               # Streamlit-Oberfläche
 scripts/             # Testdaten-Generator
 data/                # PDFs, Gold-Daten, Business-Annahmen
+docs/                # Demo-GIF und Screenshots für diese README
 tests/               # pytest
 ```
 
