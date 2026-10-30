@@ -40,3 +40,12 @@ def test_llm_agent_stoppt_nach_schrittlimit(store, dokumente, fake_llm):
     e = frage_agent("Ranking?", werkzeuge(store, dokumente), llm)
     assert e.text == "Fertig."
     assert len(e.schritte) == 4
+
+
+def test_llm_agent_gibt_lieferantenfilter_mit(store, dokumente, fake_llm):
+    llm = fake_llm([
+        LLMAntwort("", [ToolCall("dokumente_durchsuchen", {"frage": "Skonto", "lieferanten": ["Brenner"]})]),
+        "Fertig.",
+    ])
+    e = frage_agent("Welchen Skonto gibt Brenner?", werkzeuge(store, dokumente), llm)
+    assert e.quellen and {t.chunk.lieferant for t in e.quellen} == {"brenner"}

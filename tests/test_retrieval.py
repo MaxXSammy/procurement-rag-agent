@@ -17,3 +17,14 @@ def test_suche_filtert_auf_genannten_lieferanten(store):
 def test_suche_ohne_lieferant_findet_richtlinie(store):
     treffer = store.suche("Wer muss Preisgleitklauseln freigeben?")
     assert "Einkaufsrichtlinie_Hagemann.pdf" in {t.chunk.quelle for t in treffer}
+
+
+def test_verneinung_schaltet_lieferantenfilter_ab(store):
+    treffer = store.suche("Welche Lieferanten außer Alpen haben ISO 9001?")
+    assert {t.chunk.lieferant for t in treffer} - {"alpen"}
+
+
+def test_explizite_leere_liste_filtert_nicht(store):
+    # Kopfzeilen ziehen Alpen nach oben, ohne Filter kommen weiter unten aber andere dazu
+    treffer = store.suche("Stückpreis von Alpen", k=20, lieferanten=[])
+    assert {t.chunk.lieferant for t in treffer} - {"alpen"}
