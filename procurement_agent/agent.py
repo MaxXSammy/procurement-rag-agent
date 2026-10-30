@@ -13,7 +13,7 @@ from procurement_agent.config import MAX_AGENT_SCHRITTE
 from procurement_agent.extraction import Lieferantenprofil
 from procurement_agent.llm import LLMProvider
 from procurement_agent.rag import beantworte, formatiere_kontext, pruefe_zahlen
-from procurement_agent.retrieval import Treffer, VectorStore, erkenne_lieferanten
+from procurement_agent.retrieval import Treffer, VectorStore, enthaelt_verneinung, erkenne_lieferanten
 from procurement_agent.scoring import Bewertung
 
 AGENT_PROMPT = """Du bist ein Einkaufsassistent für die Ausschreibung einer Antriebswelle.
@@ -138,10 +138,13 @@ PROFIL_WOERTER = ("profil", "kennzahlen", "überblick", "übersicht", "alles üb
 def _offline(frage: str, wz: Werkzeuge) -> AgentErgebnis:
     """Regel-Router als Ersatz für das Tool Calling des Modells."""
     f = frage.lower()
-    if any(w in f for w in RANKING_WOERTER):
+    # Schlüsselwörter verstehen keinen Satzbau: "kein Ranking" würde sonst das Ranking auslösen.
+    # Bei Verneinung lieber in den Dokumenten suchen, wie beim Lieferantenfilter.
+    verneint = enthaelt_verneinung(frage)
+    if not verneint and any(w in f for w in RANKING_WOERTER):
         ergebnis = wz.ausfuehren("lieferanten_ranking", {})
         return AgentErgebnis(ergebnis, [Schritt("lieferanten_ranking", {}, ergebnis)])
-    if any(w in f for w in PROFIL_WOERTER):
+    if not verneint and any(w in f for w in PROFIL_WOERTER):
         ergebnis = wz.ausfuehren("lieferantenprofil", {"lieferant": frage})
         return AgentErgebnis(ergebnis, [Schritt("lieferantenprofil", {"lieferant": frage}, ergebnis)])
     antwort = beantworte(frage, wz.store)
