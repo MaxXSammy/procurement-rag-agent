@@ -20,6 +20,7 @@ class System:
     extractor: Extractor
     kriterien: list[Kriterium] = field(default_factory=lambda: list(STANDARD_KRITERIEN))
     regeln: KoRegeln = field(default_factory=KoRegeln)
+    ladeprobleme: list[str] = field(default_factory=list)  # kaputte oder gescannte PDFs
     _profile: list[Lieferantenprofil] | None = None
 
     @property
@@ -55,8 +56,9 @@ def baue_system(modus: str = config.MODUS, extraktion: str = "auto") -> System:
     else:
         extractor = RegelExtractor()
 
-    dokumente = lade_dokumente(config.DOCS_DIR)
-    return System(dokumente, VectorStore(chunke_alle(dokumente), embedder), llm, extractor)
+    probleme: list[str] = []
+    dokumente = lade_dokumente(config.DOCS_DIR, probleme)
+    return System(dokumente, VectorStore(chunke_alle(dokumente), embedder), llm, extractor, ladeprobleme=probleme)
 
 
 def lade_business() -> dict:

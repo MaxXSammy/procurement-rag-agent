@@ -72,6 +72,8 @@ with st.sidebar:
     except Exception as fehler:  # z. B. Ollama nicht erreichbar
         st.error(f"Start mit dieser Einstellung nicht möglich: {fehler}. Wechsle in den Offline-Modus.")
         system = lade_system("offline", "regel")
+    for problem in system.ladeprobleme:  # kaputte oder gescannte PDFs
+        st.warning(problem)
 
     st.divider()
     st.caption("Aktive Komponenten")
@@ -127,9 +129,11 @@ with tab_fragen:
         st.chat_message("user").write(frage)
         with st.chat_message("assistant"):
             st.markdown(ergebnis.text.replace("\n", "  \n"))
+            for warnung in getattr(ergebnis, "warnungen", []):
+                st.warning(warnung)
             if ergebnis.unbelegte_zahlen:
                 st.warning(f"Nicht in den Quellen belegt: {', '.join(ergebnis.unbelegte_zahlen)}")
-            elif ergebnis.quellen:
+            elif ergebnis.quellen and not getattr(ergebnis, "warnungen", []):
                 st.caption("Belegprüfung bestanden: Alle Zahlen stehen in den Quellen.")
             with st.expander(f"Quellen ({len(ergebnis.quellen)}) und Agentenschritte ({len(ergebnis.schritte)})"):
                 st.caption("Schritte: " + " → ".join(s.werkzeug for s in ergebnis.schritte))

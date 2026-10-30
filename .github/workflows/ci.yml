@@ -24,7 +24,7 @@ jobs:
       - name: Lint (Ruff)
         run: ruff check .
 
-      - name: Tests (pytest, inklusive Oberfläche im Offline-Modus)
+      - name: Tests (pytest, inklusive Oberfläche im Offline-Modus, mindestens 85 % Abdeckung)
         env:
           AGENT_MODUS: offline
-        run: pytest -q
+        run: pytest -q --cov=procurement_agent --cov-report=term-missing --cov-fail-under=85

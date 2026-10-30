@@ -1,0 +1,4 @@
+# PDFs und Bilder sind Binärdateien: Git darf darin keine Zeilenenden umwandeln (sonst sind die PDFs unter Windows kaputt)
+*.pdf binary
+*.png binary
+*.gif binary

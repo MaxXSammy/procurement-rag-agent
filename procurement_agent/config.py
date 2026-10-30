@@ -24,6 +24,14 @@ OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 LLM_MODEL = os.getenv("LLM_MODEL", "qwen2.5:7b")
 EMBED_MODEL = os.getenv("EMBED_MODEL", "nomic-embed-text")
 
+# LLM-Aufrufe: Ohne Grenzen kann ein hängendes Modell oder eine Endlosausgabe alles blockieren
+LLM_TIMEOUT_S = float(os.getenv("LLM_TIMEOUT_S", "120"))
+LLM_VERSUCHE = int(os.getenv("LLM_VERSUCHE", "3"))
+# Kontextfenster ausdrücklich setzen: Sonst schneidet Ollama lange Prompts stillschweigend ab.
+# 4096 passt bei 8 GB Grafikspeicher noch neben anderen Programmen.
+LLM_NUM_CTX = int(os.getenv("LLM_NUM_CTX", "4096"))
+LLM_NUM_PREDICT = int(os.getenv("LLM_NUM_PREDICT", "1024"))
+
 # Retrieval
 CHUNK_SIZE = 600  # Zeichen
 CHUNK_OVERLAP_LINES = 1

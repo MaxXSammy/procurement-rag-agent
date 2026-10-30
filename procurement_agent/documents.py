@@ -1,12 +1,16 @@
 """PDFs laden und in Chunks mit Metadaten zerlegen."""
 
+import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
 
 from pypdf import PdfReader
+from pypdf.errors import PdfReadError
 
 from procurement_agent.config import CHUNK_OVERLAP_LINES, CHUNK_SIZE
+
+logger = logging.getLogger(__name__)
 
 # Dateinamen-Konvention der Testdaten: <Typ>_<lieferant>[_...].pdf
 LIEFERANTEN_TYPEN = {"Angebot", "Selbstauskunft", "Rahmenvertrag"}
@@ -49,8 +53,28 @@ def lade_dokument(pfad: Path) -> Dokument:
     return Dokument(pfad.name, typ, lieferant, titel.strip(), seiten)
 
 
-def lade_dokumente(ordner: Path) -> list[Dokument]:
-    return [lade_dokument(p) for p in sorted(ordner.glob("*.pdf"))]
+MIN_ZEICHEN_PRO_SEITE = 50  # darunter ist das PDF vermutlich gescannt und hat keine Textebene
+
+
+def lade_dokumente(ordner: Path, probleme: list[str] | None = None) -> list[Dokument]:
+    """Lädt alle PDFs. Ein kaputtes PDF wird übersprungen und gemeldet, statt den Start abzubrechen.
+
+    Gescannte PDFs ohne Textebene werden geladen, aber gemeldet, weil Suche und Extraktion dort nichts finden.
+    """
+    probleme = probleme if probleme is not None else []
+    dokumente = []
+    for pfad in sorted(ordner.glob("*.pdf")):
+        try:
+            dok = lade_dokument(pfad)
+        except (PdfReadError, ValueError, OSError) as fehler:
+            probleme.append(f"{pfad.name}: nicht lesbar ({type(fehler).__name__})")
+            logger.warning("PDF nicht lesbar, übersprungen", extra={"datei": pfad.name, "fehler": str(fehler)})
+            continue
+        if sum(len(s.strip()) for s in dok.seiten) < MIN_ZEICHEN_PRO_SEITE * max(len(dok.seiten), 1):
+            probleme.append(f"{pfad.name}: kaum Text, vermutlich gescannt (OCR nötig)")
+            logger.warning("PDF ohne Textebene", extra={"datei": pfad.name})
+        dokumente.append(dok)
+    return dokumente
 
 
 def chunke(dok: Dokument, groesse: int = CHUNK_SIZE) -> list[Chunk]:

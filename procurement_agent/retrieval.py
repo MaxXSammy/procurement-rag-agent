@@ -15,7 +15,7 @@ from typing import Protocol
 
 import numpy as np
 
-from procurement_agent.config import EMBED_MODEL, OLLAMA_HOST, TOP_K
+from procurement_agent.config import EMBED_MODEL, LLM_TIMEOUT_S, OLLAMA_HOST, TOP_K
 from procurement_agent.documents import Chunk
 
 
@@ -50,7 +50,7 @@ class OllamaEmbedder:
 
         self.name = f"ollama:{modell}"
         self._modell = modell
-        self._client = ollama.Client(host=host)
+        self._client = ollama.Client(host=host, timeout=LLM_TIMEOUT_S)
 
     def fit(self, texte: list[str]) -> None:  # vortrainiert, nichts zu tun
         pass
