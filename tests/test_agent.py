@@ -49,3 +49,10 @@ def test_llm_agent_gibt_lieferantenfilter_mit(store, dokumente, fake_llm):
     ])
     e = frage_agent("Welchen Skonto gibt Brenner?", werkzeuge(store, dokumente), llm)
     assert e.quellen and {t.chunk.lieferant for t in e.quellen} == {"brenner"}
+
+
+def test_offline_router_versteht_verneinung(store, dokumente):
+    e = frage_agent("Ich will kein Ranking, nur die Zahlungsbedingungen von Brenner", werkzeuge(store, dokumente))
+    assert e.schritte[0].werkzeug == "dokumente_durchsuchen"
+    # Verneinung schaltet auch den Lieferantenfilter ab; die Kopfzeilen bringen Brenner trotzdem nach vorn
+    assert e.quellen[0].chunk.lieferant == "brenner"
