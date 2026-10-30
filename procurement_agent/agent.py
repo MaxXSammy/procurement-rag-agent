@@ -28,7 +28,14 @@ TOOLS = [
     {"type": "function", "function": {
         "name": "dokumente_durchsuchen",
         "description": "Durchsucht Angebote, Selbstauskünfte, Rahmenvertrag, Anfrage und Einkaufsrichtlinie.",
-        "parameters": {"type": "object", "properties": {"frage": {"type": "string"}}, "required": ["frage"]},
+        "parameters": {"type": "object", "properties": {
+            "frage": {"type": "string"},
+            "lieferanten": {
+                "type": "array", "items": {"type": "string"},
+                "description": "Nur Dokumente dieser Lieferanten durchsuchen. Leere Liste für alle, "
+                               "z. B. bei Fragen wie 'alle außer Alpen'.",
+            },
+        }, "required": ["frage"]},
     }},
     {"type": "function", "function": {
         "name": "lieferanten_ranking",
@@ -66,7 +73,7 @@ class Werkzeuge:
 
     def ausfuehren(self, name: str, argumente: dict) -> str:
         if name == "dokumente_durchsuchen":
-            treffer = self.store.suche(argumente.get("frage", ""))
+            treffer = self.store.suche(argumente.get("frage", ""), lieferanten=self._filter(argumente))
             versatz = len(self.quellen)
             self.quellen.extend(treffer)
             # Nummerierung fortlaufend über mehrere Suchen, damit [n] eindeutig bleibt
@@ -78,6 +85,13 @@ class Werkzeuge:
         if name == "lieferantenprofil":
             return formatiere_profil(self._finde_profil(argumente.get("lieferant", "")))
         return f"Unbekanntes Werkzeug: {name}"
+
+    def _filter(self, argumente: dict) -> list[str] | None:
+        """Vom Modell genannte Lieferanten auf Slugs abbilden. None: Suche erkennt selbst."""
+        namen = argumente.get("lieferanten")
+        if not isinstance(namen, list):
+            return None
+        return erkenne_lieferanten(" ".join(str(n) for n in namen), self.store.lieferanten)
 
     def _finde_profil(self, name: str) -> Lieferantenprofil | None:
         slugs = erkenne_lieferanten(name, [b.profil.slug for b in self.bewertungen()])

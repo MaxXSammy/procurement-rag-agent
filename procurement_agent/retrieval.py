@@ -9,6 +9,7 @@ ist das schneller als jede Datenbank und hält das Projekt ohne Infrastruktur la
 Für größere Bestände lässt sich ein VectorStore mit Chroma oder Qdrant nachrüsten.
 """
 
+import re
 from dataclasses import dataclass
 from typing import Protocol
 
@@ -75,9 +76,13 @@ class VectorStore:
         self.lieferanten = sorted({c.lieferant for c in chunks if c.lieferant})
 
     def suche(self, frage: str, k: int = TOP_K, lieferanten: list[str] | None = None) -> list[Treffer]:
-        """Kosinus-Ähnlichkeit. Nennt die Frage Lieferanten, wird auf deren Dokumente gefiltert."""
+        """Kosinus-Ähnlichkeit. Nennt die Frage Lieferanten, wird auf deren Dokumente gefiltert.
+
+        Eine explizite Liste hat Vorrang; eine leere Liste schaltet den Filter ab.
+        """
         if lieferanten is None:
-            lieferanten = erkenne_lieferanten(frage, self.lieferanten)
+            # "außer Alpen" würde sonst genau auf Alpen filtern: im Zweifel lieber gar nicht
+            lieferanten = [] if enthaelt_verneinung(frage) else erkenne_lieferanten(frage, self.lieferanten)
         q = self.embedder.embed([frage])[0]
         scores = self._matrix @ q
         if lieferanten:
@@ -91,6 +96,13 @@ def erkenne_lieferanten(frage: str, bekannte: list[str]) -> list[str]:
     """Findet Lieferanten-Slugs in der Frage ('Swiss Turning' -> 'swissturning')."""
     kompakt = frage.lower().replace(" ", "").replace("-", "")
     return [s for s in bekannte if s in kompakt]
+
+
+VERNEINUNG = re.compile(r"\b(außer|ausser|ohne|nicht|kein\w*|ausgenommen|abgesehen)\b", re.IGNORECASE)
+
+
+def enthaelt_verneinung(frage: str) -> bool:
+    return VERNEINUNG.search(frage) is not None
 
 
 def _normalisiere(m: np.ndarray) -> np.ndarray:
