@@ -112,8 +112,9 @@ def _mit_llm(frage: str, wz: Werkzeuge, llm: LLMProvider) -> AgentErgebnis:
 
 
 def _abschluss(text: str, schritte: list[Schritt], wz: Werkzeuge) -> AgentErgebnis:
+    # Ohne Werkzeugaufruf ist der Kontext leer: Jede Zahl der Antwort gilt dann als unbelegt.
     kontext = " ".join(s.ergebnis for s in schritte)
-    return AgentErgebnis(text, schritte, wz.quellen, pruefe_zahlen(text, kontext) if schritte else [])
+    return AgentErgebnis(text, schritte, wz.quellen, pruefe_zahlen(text, kontext))
 
 
 RANKING_WOERTER = ("empfehl", "bester", "beste", "ranking", "rangliste", "vergleich", "favorit", "günstigst")
