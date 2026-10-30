@@ -139,10 +139,27 @@ UMRECHNUNGEN = {
 }
 
 
+# Zertifikate sind K.-o.-Kriterien: "true" muss im Text stehen und darf nicht eingeschränkt sein.
+ISO_FELDER = {"iso_9001": "ISO 9001", "iso_14001": "ISO 14001"}
+ISO_EINSCHRAENKUNG = re.compile(r"vorbereitung|geplant|beantragt|nicht vorhanden|kein|abgelaufen", re.IGNORECASE)
+
+
+def _zertifikat_belegt(norm: str, text: str) -> bool:
+    """True, wenn mindestens eine Nennung der Norm im selben Satz nicht eingeschränkt wird."""
+    saetze = [text[m.end():].split(". ")[0] for m in re.finditer(re.escape(norm), text)]
+    return any(not ISO_EINSCHRAENKUNG.search(s) for s in saetze)
+
+
 def pruefe_belege(profil: Lieferantenprofil, quelltext: str) -> Lieferantenprofil:
-    """Setzt Zahlen auf None, die sich nicht aus dem Quelltext ableiten lassen."""
-    im_text = {round(z, 4) for z in _alle_zahlen(_flach(quelltext))}
+    """Setzt Zahlen auf None, die sich nicht aus dem Quelltext ableiten lassen.
+    Zertifikate gelten nur, wenn sie ohne Einschränkung wie "in Vorbereitung" genannt werden."""
+    text = _flach(quelltext)
+    im_text = {round(z, 4) for z in _alle_zahlen(text)}
     werte = profil.model_dump()
+    for feld, norm in ISO_FELDER.items():
+        if werte[feld] is True and not _zertifikat_belegt(norm, text):
+            werte[feld] = None
+            werte["warnungen"].append(f"{feld}=True nicht ohne Einschränkung belegt, verworfen")
     for feld in WERTFELDER:
         wert = werte[feld]
         if isinstance(wert, bool) or wert is None or feld == "skonto_prozent" and wert == 0:

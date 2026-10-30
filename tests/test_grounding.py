@@ -81,8 +81,9 @@ def test_erfundener_wert_wird_verworfen_rest_bleibt():
 
 
 def test_bools_none_und_skonto_null_brauchen_keinen_beleg():
-    p = pruefe_belege(profil(iso_9001=True, preisgleitklausel=False, skonto_prozent=0), "kein passender Text")
-    assert (p.iso_9001, p.preisgleitklausel, p.skonto_prozent) == (True, False, 0)
+    # Ausnahme: ISO = True braucht einen Beleg, siehe test_iso_*
+    p = pruefe_belege(profil(iso_9001=False, preisgleitklausel=False, skonto_prozent=0), "kein passender Text")
+    assert (p.iso_9001, p.preisgleitklausel, p.skonto_prozent) == (False, False, 0)
     assert p.co2_kg_pro_stueck is None
     assert p.warnungen == []
 
@@ -117,3 +118,19 @@ def test_agent_meldet_erfundene_zahl(store, fake_llm):
 def test_agent_antwort_ohne_werkzeug_gilt_nicht_als_belegt(store, fake_llm):
     e = frage_agent("Was kostet ein Stück bei Alpen?", Werkzeuge(store, lambda: []), fake_llm(["Es kostet 15,00 €."]))
     assert e.unbelegte_zahlen == ["15,00"]
+
+
+def test_iso_in_vorbereitung_wird_verworfen():
+    text = "ISO 9001: Zertifizierung in Vorbereitung, Erstaudit geplant für 03/2027. Liefertreue 97 %."
+    p = pruefe_belege(profil(iso_9001=True), text)
+    assert p.iso_9001 is None
+    assert any("iso_9001" in w for w in p.warnungen)
+
+
+def test_iso_zertifiziert_bleibt():
+    p = pruefe_belege(profil(iso_9001=True), "ISO 9001:2015 – zertifiziert, Zertifikat gültig bis 2028.")
+    assert p.iso_9001 is True
+
+
+def test_iso_ohne_nennung_wird_verworfen():
+    assert pruefe_belege(profil(iso_14001=True), "ISO 9001:2015 – zertifiziert.").iso_14001 is None
