@@ -90,6 +90,12 @@ st.caption(
     "Angebote durchsuchen, nach eigenen Kriterien bewerten und den Nutzen messbar machen. "
     "Alle Daten sind fiktive Testdaten."
 )
+if system.llm is None:
+    st.info(
+        "**Offline-Modus ohne KI**, z. B. in der Live-Demo: Suche per TF-IDF, Extraktion per Regeln, "
+        "Agent per Regel-Router. Lokal mit Ollama übernimmt ein Sprachmodell Extraktion und Werkzeugwahl.",
+        icon="ℹ️",
+    )
 
 tab_fragen, tab_bewertung, tab_erfolg = st.tabs(["Fragen an die Dokumente", "Lieferantenbewertung", "Erfolgsmessung"])
 
@@ -230,8 +236,12 @@ with tab_erfolg:
         annahmen["manuell_minuten_bewertung"] = a2.number_input("Manuell: Minuten für Vergleich", 0, 600, business["manuell_minuten_bewertung"], step=10)
         annahmen["stundensatz_einkauf_eur"] = a3.number_input("Stundensatz Einkauf (€)", 0, 500, business["stundensatz_einkauf_eur"], step=5)
 
-    lauf = st.session_state.get("lauf")
     verlauf = lade_verlauf()
+    if "lauf" not in st.session_state and not verlauf and system.llm is None:
+        # Ohne gespeicherten Verlauf (z. B. frisch in der Cloud) wären die Kennzahlen leer.
+        # Offline dauert die Evaluation nur Millisekunden; nicht speichern, damit nichts geschrieben wird.
+        st.session_state["lauf"] = gesamtevaluation(system, speichern=False)
+    lauf = st.session_state.get("lauf")
     letzter = lauf.eintrag if lauf else (verlauf[-1] if verlauf else None)
     kpi = geschaeftskpis(aktuelle_bewertungen(), annahmen, lauf.dauer_s if lauf else 0.0)
 
